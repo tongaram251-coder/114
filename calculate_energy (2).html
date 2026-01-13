@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <title>คำนวณค่าไฟฟ้ากิจการขนาดกลาง</title>
+    <style>
+        body {
+            font-family: "Tahoma", sans-serif;
+            margin: 0;
+            background-color: #f0f3f8;
+            color: #2c3e50;
+        }
+
+        .container {
+            display: flex;
+            gap: 20px;
+
+            min-height: calc(100vh - 40px);
+            max-width: 1200px;
+            margin: 20px auto;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+            padding: 10px;
+            /* กันชิดขอบด้านใน */
+        }
+
+        .left label {
+            margin-top: 22px;
+            /* เดิมประมาณ 12px */
+        }
+
+        .left,
+        .right {
+            width: 50%;
+            padding: 35px;
+        }
+
+        #normalForm,
+        #touForm {
+            margin-top: 25px;
+        }
+
+        /* ===== LEFT ===== */
+        .left {
+            background: #ffffff;
+            border-right: none;
+        }
+
+        h2 {
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #1f4fa3;
+            color: #1f4fa3;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            border: 1px solid #cfd8e3;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #1f4fa3;
+            box-shadow: 0 0 0 2px rgba(31, 79, 163, 0.15);
+        }
+
+        button {
+            margin-top: 20px;
+            width: 100%;
+            padding: 12px;
+            font-size: 15px;
+            font-weight: bold;
+            background: #1f4fa3;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #173c7d;
+        }
+
+        .btn-clear {
+            background: #7f8c8d;
+        }
+
+        .btn-clear:hover {
+            background: #636e72;
+        }
+
+        /* ===== RIGHT ===== */
+        .right {
+            background: #ffffff;
+        }
+
+        .result {
+            font-family: "Tahoma", sans-serif;
+            font-size: 14px;
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 6px;
+            border: 1px solid #d9e1ec;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-title {
+            display: block;
+            margin-top: 22px;
+            margin-bottom: 10px;
+            padding-bottom: 6px;
+            font-weight: bold;
+            font-size: 14px;
+            color: #1f4fa3;
+            line-height: 1.4;
+        }
+
+        .row.section-title {
+            margin-bottom: 6px;
+            /* ลดช่องว่าง */
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            /* เดิม 10 → โปร่งขึ้น */
+            line-height: 1.6;
+            /* สำคัญมาก */
+        }
+
+        .row span:last-child {
+            font-weight: bold;
+            font-variant-numeric: tabular-nums;
+            min-width: 140px;
+            text-align: right;
+        }
+
+        .total {
+            margin-top: 18px;
+            padding-top: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #c0392b;
+            border-top: 2px solid #c0392b;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+
+        .radio-group {
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .radio-item input[type="radio"] {
+            margin-right: 10px;
+            accent-color: #1f4fa3;
+            /* น้ำเงินทางการ */
+            width: 16px;
+            height: 16px;
+        }
+
+        /* ===== MOBILE ===== */
+        @media (max-width: 768px) {
+
+            body {
+                background-color: #f0f3f8;
+            }
+
+            .container {
+                flex-direction: column;
+                gap: 0;
+                margin: 0;
+                border-radius: 0;
+                min-height: 100vh;
+            }
+
+            .left,
+            .right {
+                width: 100%;
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 18px;
+            }
+
+            label {
+                font-size: 13px;
+            }
+
+            input {
+                font-size: 15px;
+                padding: 12px;
+            }
+
+            .button-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            button {
+                width: 100%;
+                font-size: 16px;
+                padding: 14px;
+            }
+
+            .result {
+                padding: 18px;
+                font-size: 14px;
+            }
+
+            .row {
+                flex-direction: row;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .row span:first-child {
+                flex: 1;
+            }
+
+            .row span:last-child {
+                min-width: auto;
+                white-space: nowrap;
+                font-size: 14px;
+            }
+
+            .total {
+                font-size: 17px;
+            }
+
+            .section-title {
+                font-size: 16px;
+                margin-top: 20px;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container">
+
+        <!-- ====== INPUT ====== -->
+        <div class="left">
+            <h2>กรอกข้อมูล (ประเภทที่ 3 กิจการขนาดกลาง)</h2>
+
+            <label>ประเภทอัตรา</label>
+            <div class="radio-group">
+                <label class="radio-item">
+                    <input type="radio" name="type" value="normal" checked onchange="toggleForm()">
+                    <span>อัตราปกติ</span>
+                </label>
+
+                <label class="radio-item">
+                    <input type="radio" name="type" value="tou" onchange="toggleForm()">
+                    <span>TOU</span>
+                </label>
+            </div>
+
+            <label>แรงดันไฟฟ้า</label>
+            <div class="radio-group">
+                <label class="radio-item">
+                    <input type="radio" name="voltage" value="1" checked>
+                    <span>69 kV ขึ้นไป</span>
+                </label>
+
+                <label class="radio-item">
+                    <input type="radio" name="voltage" value="2">
+                    <span>12–24 kV</span>
+                </label>
+
+                <label class="radio-item">
+                    <input type="radio" name="voltage" value="3">
+                    <span>ต่ำกว่า 12 kV</span>
+                </label>
+            </div>
+
+            <div id="normalForm">
+
+                <label>ความต้องการพลังงานไฟฟ้า (กิโลวัตต์)</label>
+                <input type="number" id="kw">
+
+                <label>ปริมาณการใช้พลังงานไฟฟ้า (กิโลวัตต์-ชั่วโมง)</label>
+                <input type="number" id="kwh">
+
+                <label>ความต้องการพลังไฟฟ้ารีแอคตีฟ (กิโลวาร์)</label>
+                <input type="number" id="kVAR">
+
+                <label>ค่า Ft (บาท/หน่วย)</label>
+                <input type="number" id="ft_normal">
+
+            </div>
+
+            <div id="touForm" style="display:none">
+
+                <label>ความต้องการพลังไฟฟ้าช่วง On Peak (กิโลวัตต์)</label>
+                <input type="number" id="kw_on">
+
+                <label>ความต้องการพลังไฟฟ้าช่วง Off Peak (กิโลวัตต์)</label>
+                <input type="number" id="kw_off">
+
+                <label>ปริมาณการใช้พลังงานไฟฟ้าช่วง On Peak (กิโลวัตต์-ชั่วโมง)</label>
+                <input type="number" id="onpeak">
+
+                <label>ปริมาณการใช้พลังงานไฟฟ้าช่วง Off Peak (กิโลวัตต์-ชั่วโมง)</label>
+                <input type="number" id="offpeak">
+
+                <label>ความต้องการพลังไฟฟ้ารีแอคตีฟ (กิโลวาร์)</label>
+                <input type="number" id="kVAR">
+
+                <label>ค่า Ft (บาท/หน่วย)</label>
+                <input type="number" id="ft_tou">
+
+            </div>
+
+            <div class="button-group">
+                <button onclick="calculate()">คำนวณ</button>
+                <button onclick="clearData()" class="btn-clear">
+                    เคลียร์ข้อมูล
+                </button>
+            </div>
+        </div>
+
+        <!-- ====== RESULT ====== -->
+        <div class="right">
+            <h2>ผลการคำนวณ</h2>
+            <div class="result" id="result">กรอกข้อมูลแล้วกดคำนวณ</div>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleForm() {
+            const type = document.querySelector('input[name="type"]:checked').value;
+
+            const normalForm = document.getElementById("normalForm");
+            const touForm = document.getElementById("touForm");
+
+            if (type === "normal") {
+                normalForm.style.display = "block";
+                touForm.style.display = "none";
+                clearInputsInForm("touForm");
+            } else {
+                touForm.style.display = "block";
+                normalForm.style.display = "none";
+                clearInputsInForm("normalForm");
+            }
+
+            document.getElementById("result").innerHTML = `
+            <div class="empty-result">
+                <span class="icon"></span>
+                <span><b>กรอกข้อมูลแล้วกดคำนวณ</b></span>
+            </div>
+        `;
+        }
+
+        function clearInputsInForm(formId) {
+            document
+                .querySelectorAll(`#${formId} input[type="number"]`)
+                .forEach(input => input.value = "");
+        }
+
+
+        function clearData() {
+            console.log("clearData called");
+
+            document.querySelector('input[name="type"][value="normal"]').checked = true;
+            toggleForm();
+
+            [
+                "kw", "kwh", "kVAR",
+                "onpeak", "offpeak",
+                "kw_on", "kw_off"
+            ].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = "";
+            });
+
+            document.querySelectorAll("#ft").forEach(el => {
+                el.value = "";
+            });
+
+            document.getElementById("result").innerHTML = `
+            <div class="empty-result">
+                <span class="icon"></span>
+                <span><b>กรอกข้อมูลแล้วกดคำนวณ</b></span>
+            </div>
+        `;
+        }
+
+        function nf(num, digit = 2) {
+            return num.toLocaleString('th-TH', {
+                minimumFractionDigits: digit,
+                maximumFractionDigits: digit
+            });
+        }
+
+        function calculate() {
+
+            /* อ่านค่าจาก radio */
+            const type = document.querySelector('input[name="type"]:checked').value;
+            const v = document.querySelector('input[name="voltage"]:checked').value;
+
+            /* อ่านค่าจาก input */
+            const kw = parseFloat(document.getElementById("kw")?.value) || 0;
+            const kwh = parseFloat(document.getElementById("kwh")?.value) || 0;
+            const onkwh = parseFloat(document.getElementById("onpeak")?.value) || 0;
+            const offkwh = parseFloat(document.getElementById("offpeak")?.value) || 0;
+            const kw_on = parseFloat(document.getElementById("kw_on")?.value) || 0;
+            const kw_off = parseFloat(document.getElementById("kw_off")?.value) || 0;
+            const kVAR = parseFloat(document.getElementById("kVAR")?.value) || 0;
+            
+            let ft = 0;
+
+            if (type === "normal") {
+                ft = parseFloat(document.getElementById("ft_normal")?.value) || 0;
+            } else {
+                ft = parseFloat(document.getElementById("ft_tou")?.value) || 0;
+            }
+
+            /* ===== Rate Table ===== */
+            const normal = {
+                1: { d: 175.70, e: 3.1097 },
+                2: { d: 196.26, e: 3.1471 },
+                3: { d: 221.50, e: 3.1751 }
+            };
+
+            const tou = {
+                1: { d: 74.14, on: 4.1025, off: 2.5849 },
+                2: { d: 132.93, on: 4.1839, off: 2.6037 },
+                3: { d: 210.00, on: 4.3297, off: 2.6369 }
+            };
+
+            let demand = 0, energy = 0, pfCost = 0, pfHtml = "";
+
+            if (type === "normal") {
+                demand = kw * normal[v].d;
+                energy = kwh * normal[v].e;
+            } else {
+                demand = kw_on * tou[v].d;
+                energy = (onkwh * tou[v].on) + (offkwh * tou[v].off);
+            }
+
+            let kilovar = kVAR - (kw * 0.6197);
+
+            if (!isNaN(kilovar) && kilovar >= 1) {
+                pfCost = kilovar * 56.07;
+                pfHtml = `
+                <div class="row">
+                    <span>ค่าเพาเวอร์แฟคเตอร์</span>
+                    <span>${pfCost.toFixed(3)}</span>
+                </div>`;
+            } else {
+                kilovar = 0;
+            }
+
+            let base = demand + energy + 312.24 + pfCost;
+            let ftCost = (type === "normal" ? kwh : (onkwh + offkwh)) * ft;
+            let vat = (base + ftCost) * 0.07;
+            let total = base + ftCost + vat;
+
+            clearResult();
+
+            addTitle("ส่วนที่ 1 ค่าไฟฟ้าฐาน");
+            addRow("1.1 ค่าความต้องการพลังไฟฟ้า", nf(demand, 3) + " บาท");
+            addRow("1.2 ค่าพลังงานไฟฟ้า", nf(energy, 3)+ " บาท");
+            addRow("1.3 ค่าเพาเวอร์แฟคเตอร์ (PF)", "");
+            addRow("&nbsp;&nbsp;จำนวนกิโลวาร์ที่คิดเงิน", nf(kilovar, 3) + " กิโลวาร์");
+            addRow("&nbsp;&nbsp;จำนวนเงิน", nf(pfCost, 3) + " บาท");
+
+            addRow("1.4 ค่าบริการ", nf(312.24, 2) + " บาท");
+            addRow("&nbsp;&nbsp;รวมค่าไฟฟ้าฐาน", nf(base, 3) + " บาท");
+
+            addTitle("ส่วนที่ 2 ค่าไฟฟ้าผันแปร (Ft)");
+            addRow("จำนวนพลังงานไฟฟ้า x ค่า Ft", nf(ftCost, 3) + " บาท");
+
+            addTitle("ส่วนที่ 3 ค่าภาษีมูลค่าเพิ่ม 7%");
+            addRow("(ค่าไฟฟ้าพื้นฐาน + ค่า Ft) x 0.07", nf(vat, 3) + " บาท");
+
+            addTotal("รวมเงินค่าไฟฟ้า", nf(total, 2) + " บาท");
+        }
+
+        const resultEl = document.getElementById("result");
+
+        function clearResult() {
+            resultEl.innerHTML = "";
+        }
+
+        function addTitle(text) {
+            resultEl.insertAdjacentHTML("beforeend",
+                `<div class="section-title">${text}</div>`
+            );
+        }
+
+        function addRow(label, value) {
+            resultEl.insertAdjacentHTML("beforeend",
+                `<div class="row">
+                    <span>${label}</span>
+                    <span>${value}</span>
+                </div>`
+            );
+        }
+
+        function addTotal(label, value) {
+            resultEl.insertAdjacentHTML("beforeend",
+                `<div class="row total">
+                    <span>${label}</span>
+                    <span>${value}</span>
+                </div>`
+            );
+        }
+
+        document.addEventListener("DOMContentLoaded", toggleForm);
+    </script>
+
+</body>
+
+</html>
